@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Практика: Клієнт-Серверна Архітектура</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 700px; margin: 20px auto; }
+    button { padding: 6px 12px; margin-right: 6px; margin-top: 10px; }
+    pre { background: #f2f2f2; padding: 10px; margin-top: 15px; }
+  </style>
+</head>
+<body>
+
+<h1>Практика: Клієнт–Серверна Архітектура</h1>
+
+<button onclick="getRoot()">GET /</button>
+<button onclick="getStatus()">GET /status</button>
+<button onclick="sendData()">POST /data</button>
+
+<pre id="output"></pre>
+
+<script>
+  const out = document.getElementById("output");
+
+  function show(text) {
+    out.textContent = text;
+  }
+
+  // GET /
+async function getRoot() {
+  try {
+    const res = await fetch("/?from=button=" + Date.now(), {
+      cache: "no-store"
+    });
+    show(`GET / -> статус: ${res.status} ${res.statusText}`);
+  } catch (e) {
+    show("Помилка GET /: " + e.message);
+  }
+
+  }
+
+  // GET /status
+  async function getStatus() {
+    try {
+      const res = await fetch("/status");
+      const data = await res.json();
+      show(JSON.stringify(data, null, 2));
+    } catch (e) {
+      show("Помилка GET /status: " + e.message);
+    }
+  }
+
+  // POST /data
+  async function sendData() {
+    try {
+      const res = await fetch("/data", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: "Alice", age: 25 })
+      });
+      const data = await res.json();
+      show(JSON.stringify(data, null, 2));
+    } catch (e) {
+      show("Помилка POST /data: " + e.message);
+    }
+  }
+</script>
+
+</body>
+</html>
